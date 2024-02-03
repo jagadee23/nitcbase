@@ -11,22 +11,9 @@ int main(int argc, char *argv[])
 {
     Disk disk_run;
     StaticBuffer buffer;
-    //cout << "main1\n";
     OpenRelTable cache;
-    //cout << "main\n";
-    //return FrontendInterface::handleFrontend(argc, argv);
-    for(int i=0; i<2; i++){
-        RelCatEntry relcatentry;
-        RelCacheTable::getRelCatEntry(i, &relcatentry);
-        cout << "Relation: " << relcatentry.relName << endl;
-        for(int j=0; j<relcatentry.numAttrs; j++){
-            AttrCatEntry attrcatentry;
-            AttrCacheTable::getAttrCatEntry(i, j, &attrcatentry);
-            cout << attrcatentry.attrName << ' ' << (attrcatentry.attrType==NUMBER?"NUM":"STR") << endl;
-        }
-        cout<<endl;
-    }
-    return 0;
+    return FrontendInterface::handleFrontend(argc, argv);
+
 }
 
 /*STAGE 1 :
