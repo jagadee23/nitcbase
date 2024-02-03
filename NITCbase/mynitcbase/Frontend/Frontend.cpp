@@ -15,13 +15,11 @@ int Frontend::drop_table(char relname[ATTR_SIZE]) {
 }
 
 int Frontend::open_table(char relname[ATTR_SIZE]) {
-  // Schema::openRel
-  return SUCCESS;
+  return Schema::openRel(relname);
 }
 
 int Frontend::close_table(char relname[ATTR_SIZE]) {
-  // Schema::closeRel
-  return SUCCESS;
+  return Schema::closeRel(relname);
 }
 
 int Frontend::alter_table_rename(char relname_from[ATTR_SIZE], char relname_to[ATTR_SIZE]) {
@@ -63,8 +61,8 @@ int Frontend::select_attrlist_from_table(char relname_source[ATTR_SIZE], char re
 
 int Frontend::select_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
                                       char attribute[ATTR_SIZE], int op, char value[ATTR_SIZE]) {
-  //return Algebra::select(relname_source, relname_target, attribute, op, value);
-  return SUCCESS;
+  return Algebra::select(relname_source, relname_target, attribute, op, value);
+  //return SUCCESS;
 }
 
 int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], char relname_target[ATTR_SIZE],
