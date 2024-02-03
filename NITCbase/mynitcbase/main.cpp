@@ -6,14 +6,12 @@
 #include <cstring>
 using namespace std;
 
-
 int main(int argc, char *argv[])
 {
-    Disk disk_run;
-    StaticBuffer buffer;
-    OpenRelTable cache;
-    return FrontendInterface::handleFrontend(argc, argv);
-
+	Disk disk_run;
+	StaticBuffer buffer;
+	OpenRelTable cache;
+	return FrontendInterface::handleFrontend(argc, argv);
 }
 
 /*STAGE 1 :
@@ -63,7 +61,7 @@ for(auto i: buf){
 // }
 /*const char* relName="Students"; const char* oldAttrName="Class";const char* newAttrName="Batch";
 RecBuffer attrCatBuffer (ATTRCAT_BLOCK);
-	
+
 	HeadInfo attrCatHeader;
 	attrCatBuffer.getHeader(&attrCatHeader);
 
@@ -75,7 +73,7 @@ RecBuffer attrCatBuffer (ATTRCAT_BLOCK);
 
 		// matching the relation name, and attribute name
 		if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal, relName) == 0
-			&& strcmp(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, oldAttrName) == 0) 
+			&& strcmp(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, oldAttrName) == 0)
 		{
 			strcpy(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, newAttrName);
 			attrCatBuffer.setRecord(attrCatRecord, recIndex);
