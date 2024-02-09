@@ -205,7 +205,7 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
   strcpy(attrVal.sVal, relName);
 
   // relcatRecId stores the rec-id of the relation `relName` in the Relation Catalog.
-  RecId relcatRecId = BlockAccess::linearSearch(RELCAT_RELID, attrCatEntry.attrName, attrVal, EQ);
+  RecId relcatRecId = BlockAccess::linearSearch(RELCAT_RELID, RELCAT_ATTR_RELNAME, attrVal, EQ);
 
   /* relcatRecId == {-1, -1} */
   if (relcatRecId.block == -1 && relcatRecId.slot == -1) {
