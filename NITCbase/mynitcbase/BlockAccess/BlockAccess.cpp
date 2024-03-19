@@ -2,11 +2,12 @@
 
 #include <cstring>
 #include <cstdlib>
-
+#include <iostream>
+using namespace std;
 /*  This method searches the relation specified linearly to find the next record that satisfies the specified 
     condition. The condition value is given by the argument attrVal. This function returns the recId of the next 
     record satisfying the condition. The condition that is checked for is the following. 
-*/
+*/ 
 RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attribute attrVal, int op) {
     // get the previous search index of the relation relId from the relation cache
     // (use RelCacheTable::getSearchIndex() function)
@@ -485,7 +486,6 @@ NOTE: This function will copy the result of the search to the `record` argument.
 int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], Attribute attrVal, int op) {
     // Declare a variable called recid to store the searched record
     RecId recId;
-
     int retVal;
     /* get the attribute catalog entry from the attribute cache corresponding
     to the relation with Id=relid and with attribute_name=attrName  */
@@ -531,9 +531,9 @@ int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], 
        For this, instantiate a RecBuffer class object by passing the recId and
        call the appropriate method to fetch the record
     */
+  // printf("%d",count);
     RecBuffer recBlk(recId.block);
     recBlk.getRecord(record, recId.slot);
-
     return SUCCESS;
 }
 

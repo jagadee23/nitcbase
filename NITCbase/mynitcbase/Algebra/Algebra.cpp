@@ -5,6 +5,7 @@
 #include <string.h>
 #include <cstring>
 #include <iostream>
+using namespace std;
 
 /* used to select all the records that satisfy a condition.
 the arguments of the function are
@@ -139,6 +140,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
     // BlockAccess::search() until there are no more records to be read
 
     /* BlockAccess::search() returns success */
+   // cout << attr << endl;
     while (BlockAccess::search(srcRelId, record, attr, attrVal, op) == SUCCESS) {
 
         // ret = BlockAccess::insert(targetRelId, record);

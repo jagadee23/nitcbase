@@ -1,11 +1,12 @@
 #include "BPlusTree.h"
 
 #include <cstring>
-
-RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attrVal, int op) {
+#include <iostream>
+RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attrVal, int op)
+{
     // declare searchIndex which will be used to store search index for attrName.
     IndexId searchIndex;
-
+    int count = 0;
     /* get the search index corresponding to attribute with name attrName
        using AttrCacheTable::getSearchIndex(). */
     AttrCacheTable::getSearchIndex(relId, attrName, &searchIndex);
@@ -19,7 +20,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
     int block, index;
 
     /*if searchIndex == {-1, -1}*/
-    if (searchIndex.block == -1 && searchIndex.index == -1) {
+    if (searchIndex.block == -1 && searchIndex.index == -1)
+    {
         // (search is done for the first time)
 
         // start the search from the first entry of root.
@@ -27,17 +29,18 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
         index = 0;
 
         /* if attrName doesn't have a B+ tree (block == -1)*/
-        if (block == -1) {
+        if (block == -1)
+        {
             return RecId{-1, -1};
         }
-
     }
-    else {
+    else
+    {
         /*a valid searchIndex points to an entry in the leaf index of the attribute's
         B+ Tree which had previously satisfied the op for the given attrVal.*/
 
         block = searchIndex.block;
-        index = searchIndex.index + 1;  // search is resumed from the next index.
+        index = searchIndex.index + 1; // search is resumed from the next index.
 
         // load block into leaf using IndLeaf::IndLeaf().
         IndLeaf leaf(block);
@@ -48,7 +51,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
         // load header into leafHead using BlockBuffer::getHeader().
         leaf.getHeader(&leafHead);
 
-        if (index >= leafHead.numEntries) {
+        if (index >= leafHead.numEntries)
+        {
             /* (all the entries in the block has been searched; search from the
             beginning of the next leaf index block. */
 
@@ -56,7 +60,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
             block = leafHead.rblock;
             index = 0;
 
-            if (block == -1) {
+            if (block == -1)
+            {
                 // (end of linked list reached - the search is done.)
                 return RecId{-1, -1};
             }
@@ -74,7 +79,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
     */
 
     /* while block is of type IND_INTERNAL */
-    while (StaticBuffer::getStaticBlockType(block) == IND_INTERNAL) { //use StaticBuffer::getStaticBlockType()
+    while (StaticBuffer::getStaticBlockType(block) == IND_INTERNAL)
+    { // use StaticBuffer::getStaticBlockType()
 
         // load the block into internalBlk using IndInternal::IndInternal().
         IndInternal internalBlk(block);
@@ -91,8 +97,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
         if (
             op == NE ||
             op == LT ||
-            op == LE
-        ) {
+            op == LE)
+        {
             /*
             - NE: need to search the entire linked list of leaf indices of the B+ Tree,
             starting from the leftmost leaf index. Thus, always move to the left.
@@ -108,8 +114,9 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
             internalBlk.getEntry(&intEntry, 0);
 
             block = intEntry.lChild;
-
-        } else {
+        }
+        else
+        {
             /*
             - EQ, GT and GE: move to the left child of the first entry that is
             greater than (or equal to) attrVal
@@ -126,29 +133,32 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
              Hint: the helper function compareAttrs() can be used for comparing
             */
             int slot = 0, found = 0;
-            while (slot < intHead.numEntries) {
+            while (slot < intHead.numEntries)
+            {
                 internalBlk.getEntry(&intEntry, slot);
 
                 int cmpVal = compareAttrs(intEntry.attrVal, attrVal, attrCatEntry.attrType);
-
+                count++;
                 if (
                     (op == EQ && cmpVal == 0) ||
                     (op == GE && cmpVal >= 0) ||
-                    (op == GT && cmpVal > 0)
-                ) {
+                    (op == GT && cmpVal > 0))
+                {
                     found = 1;
                     break;
                 }
-                
+
                 slot++;
             }
 
             /* such an entry is found*/
-            if (found) {
+            if (found)
+            {
                 // move to the left child of that entry
                 block = intEntry.lChild; // left child of the entry
-
-            } else {
+            }
+            else
+            {
                 // move to the right child of the last entry of the block
                 // i.e numEntries - 1 th entry of the block
 
@@ -162,7 +172,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
     /******  Identify the first leaf index entry from the current position
                 that satisfies our condition (moving right)             ******/
 
-    while (block != -1) {
+    while (block != -1)
+    {
         // load the block into leafBlk using IndLeaf::IndLeaf().
         IndLeaf leafBlk(block);
         HeadInfo leafHead;
@@ -174,39 +185,41 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
         Index leafEntry;
 
         /* while index < numEntries in leafBlk*/
-        while (index < leafHead.numEntries) {
+        while (index < leafHead.numEntries)
+        {
 
             // load entry corresponding to block and index into leafEntry
             // using IndLeaf::getEntry().
             leafBlk.getEntry(&leafEntry, index);
 
-            /* comparison between leafEntry's attribute 
+            /* comparison between leafEntry's attribute
             value and input attrVal using compareAttrs()*/
-            int cmpVal = compareAttrs(leafEntry.attrVal, attrVal, attrCatEntry.attrType); 
-
+            int cmpVal = compareAttrs(leafEntry.attrVal, attrVal, attrCatEntry.attrType);
+            count++;
             if (
                 (op == EQ && cmpVal == 0) ||
                 (op == LE && cmpVal <= 0) ||
                 (op == LT && cmpVal < 0) ||
                 (op == GT && cmpVal > 0) ||
                 (op == GE && cmpVal >= 0) ||
-                (op == NE && cmpVal != 0)
-            ) {
+                (op == NE && cmpVal != 0))
+            {
                 // (entry satisfying the condition found)
 
                 // set search index to {block, index}
                 searchIndex = IndexId{block, index};
                 AttrCacheTable::setSearchIndex(relId, attrName, &searchIndex);
-
+                printf("%d", count);
                 // return the recId {leafEntry.block, leafEntry.slot}.
-                return RecId {leafEntry.block, leafEntry.slot};
-
-            } else if ((op == EQ || op == LE || op == LT) && cmpVal > 0) {
+                return RecId{leafEntry.block, leafEntry.slot};
+            }
+            else if ((op == EQ || op == LE || op == LT) && cmpVal > 0)
+            {
                 /*future entries will not satisfy EQ, LE, LT since the values
                     are arranged in ascending order in the leaves */
 
                 // return RecId {-1, -1};
-                return RecId {-1, -1};
+                return RecId{-1, -1};
             }
 
             // search next index.
@@ -216,7 +229,8 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
         /*only for NE operation do we have to check the entire linked list;
         for all the other op it is guaranteed that the block being searched
         will have an entry, if it exists, satisying that op. */
-        if (op != NE) {
+        if (op != NE)
+        {
             break;
         }
 
@@ -227,5 +241,5 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
     }
 
     // no entry satisying the op was found; return the recId {-1,-1}
-    return RecId {-1, -1};
+    return RecId{-1, -1};
 }
