@@ -209,7 +209,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
                 // set search index to {block, index}
                 searchIndex = IndexId{block, index};
                 AttrCacheTable::setSearchIndex(relId, attrName, &searchIndex);
-                printf("%d", count);
+                printf("%d ", count);
                 // return the recId {leafEntry.block, leafEntry.slot}.
                 return RecId{leafEntry.block, leafEntry.slot};
             }
