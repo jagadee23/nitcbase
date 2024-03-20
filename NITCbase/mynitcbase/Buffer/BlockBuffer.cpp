@@ -2,7 +2,8 @@
 #include<cstring>
 #include<iostream>
 // the declarations for these functions can be found in "BlockBuffer.h"
-
+using namespace std;
+extern int count;
 BlockBuffer::BlockBuffer(int blockNum) {
 	// initialise this.blockNum with the argument
 	this->blockNum = blockNum;
@@ -198,6 +199,7 @@ int compareAttrs(union Attribute attr1, union Attribute attr2, int attrType) {
 	else {
 		diff = attr1.nVal - attr2.nVal;
 	}
+count++;
 
 	/*
 	if diff > 0 then return 1
@@ -511,7 +513,7 @@ int IndLeaf::getEntry(void *ptr, int indexNum) {
 
     // if the indexNum is not in the valid range of [0, MAX_KEYS_LEAF-1]
     //     return E_OUTOFBOUND.
-	if (indexNum < 0 || indexNum >= MAX_KEYS_INTERNAL) {
+	if (indexNum < 0 || indexNum >= MAX_KEYS_LEAF) {
 		return E_OUTOFBOUND;
 	}
 

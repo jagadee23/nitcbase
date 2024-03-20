@@ -1,12 +1,11 @@
 #include "Algebra.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <cstring>
 #include <iostream>
 using namespace std;
-
+ int count;
 /* used to select all the records that satisfy a condition.
 the arguments of the function are
 * srcRel - the source relation we want to select from
@@ -41,7 +40,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
     if (srcRelId == E_RELNOTOPEN) {
         return E_RELNOTOPEN;
     }
-
+count=0;
     // get the attr-cat entry for attr, using AttrCacheTable::getAttrCatEntry()
     // if getAttrcatEntry() call fails return E_ATTRNOTEXIST
     AttrCatEntry attrCatEntry;
@@ -160,7 +159,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 
     // Close the targetRel by calling closeRel() method of schema layer
     Schema::closeRel(targetRel);
-
+printf("%d\n",count);
     // return SUCCESS.
     return SUCCESS;
 }

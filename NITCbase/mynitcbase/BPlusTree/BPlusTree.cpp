@@ -6,7 +6,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
 {
     // declare searchIndex which will be used to store search index for attrName.
     IndexId searchIndex;
-    int count = 0;
+    //int count = 0;
     /* get the search index corresponding to attribute with name attrName
        using AttrCacheTable::getSearchIndex(). */
     AttrCacheTable::getSearchIndex(relId, attrName, &searchIndex);
@@ -138,7 +138,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
                 internalBlk.getEntry(&intEntry, slot);
 
                 int cmpVal = compareAttrs(intEntry.attrVal, attrVal, attrCatEntry.attrType);
-                count++;
+               // count++;
                 if (
                     (op == EQ && cmpVal == 0) ||
                     (op == GE && cmpVal >= 0) ||
@@ -191,11 +191,10 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
             // load entry corresponding to block and index into leafEntry
             // using IndLeaf::getEntry().
             leafBlk.getEntry(&leafEntry, index);
-
             /* comparison between leafEntry's attribute
             value and input attrVal using compareAttrs()*/
             int cmpVal = compareAttrs(leafEntry.attrVal, attrVal, attrCatEntry.attrType);
-            count++;
+            //count++;
             if (
                 (op == EQ && cmpVal == 0) ||
                 (op == LE && cmpVal <= 0) ||
@@ -209,7 +208,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
                 // set search index to {block, index}
                 searchIndex = IndexId{block, index};
                 AttrCacheTable::setSearchIndex(relId, attrName, &searchIndex);
-                printf("%d ", count);
+                //printf("%d ", count);
                 // return the recId {leafEntry.block, leafEntry.slot}.
                 return RecId{leafEntry.block, leafEntry.slot};
             }
