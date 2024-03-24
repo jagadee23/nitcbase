@@ -386,6 +386,53 @@ int BPlusTree::bPlusDestroy(int rootBlockNum)
     }
 }
 
+int BPlusTree::findLeafToInsert(int rootBlock, Attribute attrVal, int attrType)
+{
+    int blockNum = rootBlock;
+
+    while (StaticBuffer::getStaticBlockType(blockNum))
+    { // use
+
+        // declare an IndInternal object for block using appropriate constructor
+        IndInternal internal(blockNum);
+        // get header of the block using BlockBuffer::getHeader()
+        HeadInfo head;
+        internal.getHeader(&head);
+        /* iterate through all the entries, to find the first entry whose
+             attribute value >= value to be inserted.
+             NOTE: the helper function compareAttrs() declared in BlockBuffer.h
+                   can be used to compare two Attribute values. */
+
+        for (int i = 0; i < head.numEntries; i++)
+        {
+            indIntBlk.getEntry(&entry, i);
+
+            int cmpVal = compareAttrs(entry.attrVal, attrVal, attrType);
+
+            if (cmpVal >= 0)
+            {
+                found = 1;
+                break;
+            }
+        }
+
+        /* if no such entry is found*/
+        if (!found)
+        {
+            // set blockNum = rChild of (nEntries-1)'th entry of the block
+            // (i.e. rightmost child of the block)
+            blockNum = entry.rChild;
+        }
+        else
+        {
+            // set blockNum = lChild of the entry that was found
+            blockNum = entry.lChild;
+        }
+    }
+
+    return blockNum;
+}
+
 int BPlusTree::bPlusInsert(int relId, char attrName[ATTR_SIZE], Attribute attrVal, RecId recId)
 {
     // get the attribute cache entry corresponding to attrName
