@@ -40,7 +40,7 @@ int AttrCacheTable::getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *att
 int AttrCacheTable::setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf)
 {
 
-	if (rrelId < 0 || relId >= MAX_OPEN)
+	if (relId < 0 || relId >= MAX_OPEN)
 	{
 		return E_OUTOFBOUND;
 	}
@@ -133,7 +133,7 @@ int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCat
 int AttrCacheTable::setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf)
 {
 
-	if (rrelId < 0 || relId >= MAX_OPEN)
+	if (relId < 0 || relId >= MAX_OPEN)
 	{
 		return E_OUTOFBOUND;
 	}
@@ -145,7 +145,7 @@ int AttrCacheTable::setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCat
 
 	for (AttrCacheEntry *entry = attrCache[relId]; entry != nullptr; entry = entry->next)
 	{
-		if (strcpy(entry->attrCatEntry.attrName) == 0)
+		if (strcmp(entry->attrCatEntry.attrName,attrName) == 0)
 		{
 			entry->attrCatEntry = *attrCatBuf;
 			AttrCacheTable::attrCache[relId]->dirty = true;
