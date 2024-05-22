@@ -1,0 +1,3 @@
+NITCbase is a project designed to help undergraduate students understand and implement an elementary Relational Database Management System (RDBMS). It provides a step-by-step roadmap and comprehensive documentation, including tutorials and detailed design specifications.
+
+The project follows an eight-layer design and includes standard RDBMS features such as creating and deleting tables, inserting records, and executing selection queries. It supports basic SQL operations like create, drop, alter, insert, select, project, and equi-join, as well as B+ Tree-based indexing with create index and drop index queries. However, NITCbase does not support concurrency.
